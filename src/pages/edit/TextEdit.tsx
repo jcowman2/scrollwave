@@ -1,18 +1,14 @@
 import React from "react";
+import { Editor, EditorState } from "draft-js";
 
-export interface ITextEditProps {}
+export interface TextEditProps {}
 
-const TextEdit: React.FC<ITextEditProps> = props => {
-  return (
-    <div className="field">
-      <div className="control">
-        <textarea
-          className="textarea TextEdit"
-          placeholder="e.g. Hello world"
-        />
-      </div>
-    </div>
+const TextEdit: React.FC<TextEditProps> = props => {
+  const [editorState, setEditorState] = React.useState(
+    EditorState.createEmpty()
   );
+
+  return <Editor editorState={editorState} onChange={setEditorState} />;
 };
 
 export default TextEdit;
