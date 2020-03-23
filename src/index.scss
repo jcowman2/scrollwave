@@ -1,0 +1,28 @@
+@import "node_modules/bulmaswatch/darkly/bulmaswatch";
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.FullHeight {
+  height: 100%;
+}
+
+.TextEdit {
+  background: transparent;
+  color: $text;
+  border-width: 0;
+  resize: none;
+  font-size: 2em;
+  height: 100%;
+}
