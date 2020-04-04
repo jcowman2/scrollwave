@@ -5,7 +5,7 @@ export interface IEditPageProps {}
 
 const EditPage: React.FC<IEditPageProps> = props => {
   return (
-    <div className="FullHeight">
+    <div className="TextEditContainer">
       <TextEdit />
     </div>
   );

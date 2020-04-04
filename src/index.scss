@@ -14,15 +14,15 @@ code {
     monospace;
 }
 
-.FullHeight {
-  height: 100%;
+.TextEditContainer {
+  height: 400px;
+  overflow: scroll;
+  // background-color: black;
 }
 
 .TextEdit {
-  background: transparent;
   color: $text;
-  border-width: 0;
-  resize: none;
-  font-size: 2em;
-  height: 100%;
+  text-align: center;
+  // border: 2px solid $text;
+  font-size: 3em;
 }
