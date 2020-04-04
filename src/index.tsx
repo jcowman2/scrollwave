@@ -3,6 +3,10 @@ import ReactDOM from "react-dom";
 import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faPlusCircle, faUpload } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faPlusCircle, faUpload);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

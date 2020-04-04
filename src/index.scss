@@ -7,6 +7,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: $text;
 }
 
 code {
@@ -17,12 +18,44 @@ code {
 .TextEditContainer {
   height: 400px;
   overflow: scroll;
+  display: flex;
+  align-items: center;
   // background-color: black;
+  margin-bottom: 92px;
 }
 
 .TextEdit {
   color: $text;
-  text-align: center;
+  // text-align: center;
+  margin: auto;
   // border: 2px solid $text;
   font-size: 3em;
+}
+
+.AudioEditContainer {
+  text-align: center;
+}
+
+.AddAudioBtn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: auto;
+  background-color: transparent;
+  color: $text;
+  border: none;
+  opacity: 0.8;
+}
+
+.AddAudioBtnLabel {
+  font-size: 3em;
+  margin-left: 16px;
+}
+
+.UploadAudioModalFileInput {
+  display: flex;
+}
+
+.UploadAudioModalFileInputData {
+  margin-left: 16px;
 }
