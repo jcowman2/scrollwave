@@ -83,3 +83,26 @@ code {
 #AudioEditWaveform *::-webkit-scrollbar {
   display: none;
 }
+
+.NavButton {
+  opacity: 0.6;
+}
+
+.NavButton:hover {
+  opacity: 1;
+}
+
+.FadeIn {
+  animation-duration: 1s;
+  animation-name: fadein;
+  animation-play-state: paused;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

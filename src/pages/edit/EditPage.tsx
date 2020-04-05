@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextEdit from "./TextEdit";
 import AudioEdit from "./AudioEdit";
 import UploadAudioModal from "../UploadAudioModal";
+import FullPage from "../../common/FullPage";
 
 export interface IEditPageProps {}
 
@@ -10,8 +11,25 @@ const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
   const [audio, setAudio] = React.useState<File>();
 
+  const navBar = (
+    <nav
+      className="navbar FadeIn"
+      style={audio ? { animationPlayState: "running" } : {}}
+    >
+      <div className="container">
+        <div className="navbar-menu">
+          <div className="navbar-end">
+            <div className="navbar-item">
+              <button className="button NavButton">Watch</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+
   return (
-    <>
+    <FullPage header={navBar}>
       <div className="TextEditContainer">
         <TextEdit />
       </div>
@@ -44,7 +62,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
           setAudio(file);
         }}
       />
-    </>
+    </FullPage>
   );
 };
 
