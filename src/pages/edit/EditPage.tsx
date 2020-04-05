@@ -5,7 +5,9 @@ import AudioEdit from "./AudioEdit";
 import UploadAudioModal from "../UploadAudioModal";
 import FullPage from "../../common/FullPage";
 
-export interface IEditPageProps {}
+export interface IEditPageProps {
+  onWatch: () => void;
+}
 
 const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
@@ -20,7 +22,9 @@ const EditPage: React.FC<IEditPageProps> = props => {
         <div className="navbar-menu">
           <div className="navbar-end">
             <div className="navbar-item">
-              <button className="button NavButton">Watch</button>
+              <button className="button NavButton" onClick={props.onWatch}>
+                Watch
+              </button>
             </div>
           </div>
         </div>

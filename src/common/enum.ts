@@ -10,3 +10,8 @@ export enum Color {
   TURQUOISE = "#1abc9c",
   GRAY = "#8c9b9d"
 }
+
+export enum Route {
+  EDIT = "edit",
+  VIEW = "view"
+}
