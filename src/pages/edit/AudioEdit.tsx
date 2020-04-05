@@ -7,6 +7,7 @@ import AudioControls from "./AudioControls";
 
 export interface IAudioEditProps {
   audio: File;
+  onError: () => void;
 }
 
 const AudioEdit: React.FC<IAudioEditProps> = props => {
@@ -33,14 +34,16 @@ const AudioEdit: React.FC<IAudioEditProps> = props => {
       setIsLoaded(true);
       ws.zoom(100);
     });
+    ws.on("finish", () => setIsPlaying(false));
+    ws.on("error", () => props.onError());
 
     surfer.current = ws;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.audio]);
 
   return (
     <div>
       <div id="AudioEditWaveform" />
-      <div id="AudioEditWaveTimeline" />
       <Loadable isLoading={!isLoaded}>
         <AudioControls
           isPlaying={isPlaying}

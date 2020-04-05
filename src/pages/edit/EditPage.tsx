@@ -17,7 +17,15 @@ const EditPage: React.FC<IEditPageProps> = props => {
       </div>
       <div className="AudioEditContainer">
         {audio ? (
-          <AudioEdit audio={audio} />
+          <AudioEdit
+            audio={audio}
+            onError={() => {
+              alert(
+                "That file could not be processed. Please try again or upload a different file."
+              );
+              setAudio(undefined);
+            }}
+          />
         ) : (
           <button
             className="BlankButton AddAudioBtn"
