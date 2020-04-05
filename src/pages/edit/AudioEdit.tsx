@@ -22,6 +22,7 @@ const AudioEdit: React.FC<IAudioEditProps> = props => {
       container: "#AudioEditWaveform",
       waveColor: Color.PRIMARY,
       progressColor: Color.TURQUOISE,
+      cursorColor: Color.GRAY,
       barWidth: 3,
       barRadius: 3,
       cursorWidth: 1,

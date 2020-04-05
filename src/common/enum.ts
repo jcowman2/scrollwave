@@ -7,5 +7,6 @@ export enum EntityType {
 export enum Color {
   PRIMARY = "#375a7f",
   PRIMARY_SAT_10 = "#405a76",
-  TURQUOISE = "#1abc9c"
+  TURQUOISE = "#1abc9c",
+  GRAY = "#8c9b9d"
 }
