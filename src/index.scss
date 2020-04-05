@@ -21,7 +21,7 @@ code {
   display: flex;
   align-items: center;
   // background-color: black;
-  margin-bottom: 92px;
+  margin-bottom: 64px;
 }
 
 .TextEdit {
@@ -34,6 +34,13 @@ code {
 
 .AudioEditContainer {
   text-align: center;
+  height: 250px;
+}
+
+.BlankButton {
+  border: none;
+  background-color: transparent;
+  color: $text;
 }
 
 .AddAudioBtn {
@@ -41,9 +48,6 @@ code {
   flex-direction: row;
   align-items: center;
   margin: auto;
-  background-color: transparent;
-  color: $text;
-  border: none;
   opacity: 0.8;
 }
 
@@ -58,4 +62,24 @@ code {
 
 .UploadAudioModalFileInputData {
   margin-left: 16px;
+}
+
+.Loadable {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.AudioControls {
+  margin-top: 16px;
+}
+
+#AudioEditWaveform * {
+  -ms-overflow-style: none;
+}
+
+#AudioEditWaveform *::-webkit-scrollbar {
+  display: none;
 }

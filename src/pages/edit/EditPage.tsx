@@ -1,7 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextEdit from "./TextEdit";
-import { IAudio } from "./edit.types";
 import AudioEdit from "./AudioEdit";
 import UploadAudioModal from "../UploadAudioModal";
 
@@ -9,7 +8,7 @@ export interface IEditPageProps {}
 
 const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
-  const [audio, setAudio] = React.useState<IAudio>();
+  const [audio, setAudio] = React.useState<File>();
 
   return (
     <>
@@ -21,7 +20,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
           <AudioEdit audio={audio} />
         ) : (
           <button
-            className="AddAudioBtn"
+            className="BlankButton AddAudioBtn"
             onClick={() => setAudioModalVisible(true)}
           >
             <FontAwesomeIcon icon="plus-circle" size="6x" />
@@ -34,7 +33,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
         onClose={() => setAudioModalVisible(false)}
         onSubmit={file => {
           setAudioModalVisible(false);
-          setAudio({ file });
+          setAudio(file);
         }}
       />
     </>

@@ -1,11 +1,11 @@
+/* eslint-disable no-unused-vars */
+
 export enum EntityType {
   ANCHOR = "Anchor"
 }
 
-export enum CustomKeyBinding {
-  DROP_ANCHOR = "sw-anchor-drop"
-}
-
-export enum KeyCode {
-  BACKQUOTE = 192
+export enum Color {
+  PRIMARY = "#375a7f",
+  PRIMARY_SAT_10 = "#405a76",
+  TURQUOISE = "#1abc9c"
 }
