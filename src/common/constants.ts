@@ -1,0 +1,1 @@
+export const TEXT_VIEWPORT_HEIGHT = 400;
