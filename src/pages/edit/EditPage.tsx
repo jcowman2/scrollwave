@@ -1,41 +1,50 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TextEdit from "./TextEdit";
+import TextEdit, { TextEditRef } from "./TextEdit";
 import AudioEdit from "./AudioEdit";
 import UploadAudioModal from "../UploadAudioModal";
 import FullPage from "../../common/FullPage";
+import { ReaderData } from "../../common/common.types";
 
 export interface IEditPageProps {
-  onWatch: () => void;
+  onWatch: (readerData: ReaderData) => void;
 }
 
 const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
   const [audio, setAudio] = React.useState<File>();
-
-  const navBar = (
-    <nav
-      className="navbar FadeIn"
-      style={audio ? { animationPlayState: "running" } : {}}
-    >
-      <div className="container">
-        <div className="navbar-menu">
-          <div className="navbar-end">
-            <div className="navbar-item">
-              <button className="button NavButton" onClick={props.onWatch}>
-                Watch
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
+  const textEditRef = React.useRef<TextEditRef>(null);
 
   return (
-    <FullPage header={navBar}>
+    <FullPage
+      header={
+        <nav
+          className="navbar FadeIn"
+          style={audio ? { animationPlayState: "running" } : {}}
+        >
+          <div className="container">
+            <div className="navbar-menu">
+              <div className="navbar-end">
+                <div className="navbar-item">
+                  <button
+                    className="button NavButton"
+                    onClick={() => {
+                      const contentState = textEditRef.current?.getContentState();
+                      const readerData = ReaderData.fromEditor(contentState!);
+                      props.onWatch(readerData);
+                    }}
+                  >
+                    Watch
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      }
+    >
       <div className="TextEditContainer">
-        <TextEdit />
+        <TextEdit ref={textEditRef} />
       </div>
       <div className="AudioEditContainer">
         {audio ? (
