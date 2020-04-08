@@ -8,7 +8,7 @@ export interface IBlock {
 export class ReaderData {
   blocks: IBlock[];
 
-  private constructor(blocks: IBlock[]) {
+  constructor(blocks: IBlock[]) {
     this.blocks = blocks;
   }
 

@@ -3,7 +3,7 @@ import WaveSurfer from "wavesurfer.js";
 
 import { Color } from "../../common/enum";
 import Loadable from "../../common/Loadable";
-import AudioControls from "./AudioControls";
+import AudioControls from "../../common/AudioControls";
 
 export interface IAudioEditProps {
   audio: File;
