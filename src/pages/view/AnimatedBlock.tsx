@@ -1,9 +1,6 @@
 import React from "react";
 import { IBlock } from "../../common/common.types";
-
-export interface IBlockAnimationState {
-  offsetVertical: number;
-}
+import { IBlockAnimationState } from "./view.types";
 
 export interface IAnimatedBlockProps {
   animationState: IBlockAnimationState;
@@ -24,7 +21,7 @@ const AnimatedBlock: React.FC<IAnimatedBlockProps> = props => {
   return (
     <p
       className="TextViewportBlock"
-      style={{ top: props.animationState.offsetVertical }}
+      style={{ opacity: props.animationState.opacity }}
       ref={blockRef}
     >
       {props.data.text}

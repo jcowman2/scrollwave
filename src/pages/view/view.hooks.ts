@@ -1,54 +1,64 @@
 import React from "react";
 import { IBlock } from "../../common/common.types";
-
-interface IAnimatedBlockData extends IBlock {
-  isActive: boolean;
-}
-
-type UpdateHandler = (item: IAnimatedBlockData, index: number) => object;
+import { UpdateHandler } from "./view.types";
 
 export const useMoveState = (blocks: IBlock[]) => {
-  const [animatedBlocks, setAnimatedBlocks] = React.useState<
-    IAnimatedBlockData[]
-  >(() => blocks.map(block => ({ ...block, isActive: false })));
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const [lastActive, setLastActive] = React.useState(-1);
+  const [activeBlockIndex, setActiveBlockIndex] = React.useState(-1);
+  const [isBlockExiting, setBlockExiting] = React.useState(false);
 
-  const update: UpdateHandler = (item, index) => {
-    console.log("update", item, index);
-    if (item.isActive) {
-      return {
-        offsetVertical: [-100],
-        timing: { duration: 10000 }
-      };
+  const nodes = isBlockExiting
+    ? []
+    : blocks.slice(activeBlockIndex, activeBlockIndex + 1);
+
+  const handleStart: UpdateHandler = () => ({ opacity: 0 });
+  const handleEnter: UpdateHandler = () => ({
+    opacity: [1],
+    timing: { duration: 1000 }
+  });
+  const handleLeave: UpdateHandler = () => ({
+    opacity: [0],
+    timing: { duration: 1000 },
+    events: { end: () => setBlockExiting(false) }
+  });
+
+  const startNextBlock = () => {
+    if (activeBlockIndex >= 0) {
+      setBlockExiting(true);
     }
-    return {
-      offsetVertical: [0],
-      timing: { duration: Number.MAX_SAFE_INTEGER }
-    };
+
+    setActiveBlockIndex(idx => idx + 1);
   };
 
-  const play = () => {
-    if (!isPlaying) {
-      setIsPlaying(true);
-      setLastActive(n => n + 1);
-      setAnimatedBlocks(
-        animatedBlocks.map((block, index) => ({
-          ...block,
-          isActive: index <= lastActive + 1
-        }))
-      );
-    }
-  };
+  return { nodes, handleStart, handleEnter, handleLeave, startNextBlock };
+};
 
-  const pause = () => {
-    if (isPlaying) {
-      setIsPlaying(false);
-      setAnimatedBlocks(
-        animatedBlocks.map(block => ({ ...block, isActive: false }))
-      );
-    }
-  };
+export const useTimingControl = (
+  isPlaying: boolean,
+  startNextBlock: () => void,
+  activeNode: IBlock
+) => {
+  const [isPlayHandled, setPlayHandled] = React.useState(false);
+  const [isPauseHandled, setPauseHandled] = React.useState(false);
 
-  return { update, play, pause, animatedBlocks };
+  React.useEffect(() => {
+    if (isPlaying && !isPlayHandled) {
+      startNextBlock();
+      setPlayHandled(true);
+      setPauseHandled(false);
+    } else if (!isPlaying && !isPauseHandled) {
+      setPauseHandled(true);
+      setPlayHandled(false);
+    }
+  }, [isPlaying, startNextBlock, isPlayHandled, isPauseHandled]);
+
+  React.useEffect(() => {
+    if (!activeNode) {
+      return;
+    }
+
+    const wordCount = activeNode.text.split(" ").length;
+    const duration = Math.max(wordCount * (60 / 200) * 1000, 2000);
+
+    setTimeout(startNextBlock, duration);
+  }, [activeNode, startNextBlock]);
 };
