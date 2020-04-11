@@ -1,7 +1,7 @@
 import React from "react";
 import FullPage from "../../common/FullPage";
 import { ReaderData } from "../../common/common.types";
-import AnimatedReader from "./AnimatedReader";
+// import AnimatedReader from "./AnimatedReader";
 import AudioControls from "../../common/AudioControls";
 
 export interface IViewPageProps {
@@ -13,7 +13,7 @@ const ViewPage: React.FC<IViewPageProps> = props => {
 
   return (
     <FullPage>
-      <AnimatedReader blocks={props.readerData.blocks} isPlaying={isPlaying} />
+      {/* <AnimatedReader blocks={props.readerData.blocks} isPlaying={isPlaying} /> */}
       <AudioControls
         isPlaying={isPlaying}
         onPlayPause={() => setIsPlaying(!isPlaying)}

@@ -1,7 +1,7 @@
+/*
 import React, { useEffect } from "react";
 import { NodeGroup } from "react-move";
 import { IBlock } from "../../common/common.types";
-import { TEXT_VIEWPORT_HEIGHT } from "../../common/constants";
 import AnimatedBlock from "./AnimatedBlock";
 import { useMoveState, useTimingControl } from "./view.hooks";
 import { IBlockAnimationState } from "./view.types";
@@ -55,3 +55,6 @@ const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
 };
 
 export default AnimatedReader;
+*/
+
+export default {};

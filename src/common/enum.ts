@@ -15,3 +15,12 @@ export enum Route {
   EDIT = "edit",
   VIEW = "view"
 }
+
+export enum ReaderEventType {
+  READER_START = "Reader Start",
+  BLOCK_ENTER = "Block Enter",
+  SPAN_WILL_ENTER = "Span Will Enter",
+  SPAN_ENTER = "Span Enter",
+  BLOCK_WILL_LEAVE = "Block Will Leave",
+  BLOCK_LEAVE = "Block Leave"
+}

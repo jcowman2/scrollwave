@@ -1,3 +1,4 @@
+/*
 import React from "react";
 import { IBlock } from "../../common/common.types";
 import { IBlockAnimationState } from "./view.types";
@@ -30,3 +31,5 @@ const AnimatedBlock: React.FC<IAnimatedBlockProps> = props => {
 };
 
 export default AnimatedBlock;
+*/
+export default {};
