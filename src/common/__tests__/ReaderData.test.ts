@@ -1,4 +1,4 @@
-import { ReaderData, IBlock, ISpan, IReaderEvent } from "../common.types";
+import { ReaderData, IBlock, ISpan, IReaderRegion } from "../common.types";
 import { ReaderEventType } from "../enum";
 
 const DEMO_BLOCKS1: IBlock[] = [
@@ -34,7 +34,7 @@ const DEMO_SONG = { length: 20000 };
 const deepCopy = <T extends object>(obj: T): T =>
   JSON.parse(JSON.stringify(obj));
 
-const sumDurations = (events: IReaderEvent[]) =>
+const sumDurations = (events: IReaderRegion[]) =>
   Math.round(events.reduce((sum, event) => sum + event.duration, 0));
 
 const findSpanEnterIndex = (span: ISpan, readerData: ReaderData) =>

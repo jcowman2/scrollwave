@@ -1,9 +1,9 @@
 import Draft from "draft-js";
 import { ReaderEventType } from "./enum";
 import { getTransitionLength, getWordCount } from "./utils";
-import logger, { ReaderDataLogConfig as LC } from "./logger";
+import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
 
-const LOG = logger<LC>("ReaderData");
+const LOG = logger<LC>(LogConfig.ReaderData);
 
 export interface IAudioFile {
   length: number;
@@ -20,13 +20,17 @@ export interface ISpan {
   start?: number;
 }
 
-export interface IReaderEvent {
-  type: ReaderEventType;
+export interface IReaderRegionData {
   block: IBlock;
   span?: ISpan;
+}
+
+export interface IReaderRegion {
+  type: ReaderEventType;
   start: number;
   end: number;
   duration: number;
+  data: IReaderRegionData;
 }
 
 interface ITrackingSpan {
@@ -39,7 +43,7 @@ interface ITrackingSpan {
 
 export class ReaderData {
   blocks: IBlock[];
-  events: IReaderEvent[];
+  events: IReaderRegion[];
   audio: IAudioFile;
 
   constructor(blocks: IBlock[], audio: IAudioFile) {
@@ -49,10 +53,10 @@ export class ReaderData {
     this.events = this.assembleEvents(blocks);
   }
 
-  private assembleEvents = (blocks: IBlock[]): IReaderEvent[] => {
+  private assembleEvents = (blocks: IBlock[]): IReaderRegion[] => {
     LOG.log(LC.AssembleEvents, "start", { blocks });
 
-    const events: IReaderEvent[] = [];
+    const events: IReaderRegion[] = [];
 
     const defaultSpanEnterLen = getTransitionLength(
       ReaderEventType.SPAN_WILL_ENTER
@@ -79,8 +83,10 @@ export class ReaderData {
 
       events.push({
         type,
-        block,
-        span,
+        data: {
+          block,
+          span
+        },
         start: currentTime,
         end: currentTime + duration,
         duration

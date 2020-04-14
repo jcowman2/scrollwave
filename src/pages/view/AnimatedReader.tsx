@@ -1,3 +1,42 @@
+import React from "react";
+import Timeline from "../../intime/Timeline";
+import { IReaderRegion } from "../../common/common.types";
+import { ITickEvent, IRegionEvent } from "../../intime/intime.types";
+import { ReaderEventType } from "../../common/enum";
+import logger, {
+  AnimatedReaderLogConfig as LC,
+  LogConfig
+} from "../../common/logger";
+
+const LOG = logger<LC>(LogConfig.AnimatedReader);
+
+export interface IAnimatedReaderProps {
+  regions: IReaderRegion[];
+  isPlaying: boolean;
+  value: number;
+  onTick: (event: ITickEvent) => void;
+}
+
+const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
+  const handleRegionEvent = (event: IRegionEvent<ReaderEventType>) => {
+    LOG.log(LC.HandleRegionEvent, { event });
+  };
+
+  return (
+    <>
+      <Timeline
+        track={props.regions}
+        value={props.value}
+        playing={props.isPlaying}
+        onTick={props.onTick}
+        onRegion={handleRegionEvent}
+      />
+    </>
+  );
+};
+
+export default AnimatedReader;
+
 /*
 import React, { useEffect } from "react";
 import { NodeGroup } from "react-move";
@@ -56,5 +95,3 @@ const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
 
 export default AnimatedReader;
 */
-
-export default {};

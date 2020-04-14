@@ -7,14 +7,18 @@ export interface ITrackRegion<
   start: number;
   end: number;
   duration: number;
-  data: Data;
-  state: IRegionState<State>;
+  data?: Data;
+  state?: IRegionState<State>;
+}
+
+export interface ITickEvent {
+  value: number;
 }
 
 export type IRegionState<V> = { [K in keyof V]: IRegionStateProperty<V[K]> };
 export type IRegionStateProperty<T = any> = { from: T; to: T };
 
-export interface ITickEvent<
+export interface IRegionEvent<
   RegionType extends string = string,
   Data = {},
   State extends object = {}

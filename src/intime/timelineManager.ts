@@ -1,6 +1,10 @@
 import { easeCubic } from "d3-ease";
 import { interpolate } from "d3-interpolate";
-import { ITrackRegion, ITickEvent, IRegionStateProperty } from "./intime.types";
+import {
+  ITrackRegion,
+  IRegionEvent,
+  IRegionStateProperty
+} from "./intime.types";
 
 type IInterpolateStateResult = {
   progress: number;
@@ -17,13 +21,13 @@ export class TimelineManager {
   getEventsSinceLastTick = (
     last: number,
     current: number
-  ): ITickEvent<any>[] => {
+  ): IRegionEvent<any>[] => {
     const regions = this.track.filter(
       region =>
         this.isWithinRegion(region, last) ||
         this.isWithinRegion(region, current)
     );
-    const events = regions.map<ITickEvent>(region => {
+    const events = regions.map<IRegionEvent>(region => {
       const { progress, newState: state } = this.interpolateState(
         region,
         current
@@ -48,11 +52,13 @@ export class TimelineManager {
     const eased = easeCubic(localNormalized);
 
     const newState: { [key: string]: any } = {};
-    Object.entries<IRegionStateProperty>(region.state).forEach(
-      ([key, value]) => {
-        newState[key] = interpolate(value.from, value.to)(eased);
-      }
-    );
+    if (region.state) {
+      Object.entries<IRegionStateProperty>(region.state).forEach(
+        ([key, value]) => {
+          newState[key] = interpolate(value.from, value.to)(eased);
+        }
+      );
+    }
 
     return { progress: eased, newState };
   };

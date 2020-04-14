@@ -1,9 +1,14 @@
-const SUPPRESS: string[] = [
-  // "useTimingControl"
-  "ReaderData"
+export enum LogConfig {
+  ReaderData = "ReaderData",
+  AnimatedReader = "AnimatedReader"
+}
+
+const SUPPRESS: LogConfig[] = [
+  //
+  LogConfig.ReaderData
 ];
 
-const createLogger = <S extends string>(module: string) => {
+const createLogger = <S extends string>(module: LogConfig) => {
   if (SUPPRESS.includes(module)) {
     return {
       log: () => {}
@@ -32,6 +37,10 @@ export enum ReaderDataLogConfig {
   GetNextSpanWithStart = "GetNextSpanWithStart",
   GetSpanTime = "GetSpanTime",
   GetTransitionTimes = "GetTransitionTimes"
+}
+
+export enum AnimatedReaderLogConfig {
+  HandleRegionEvent = "handleRegionEvent"
 }
 
 export default createLogger;
