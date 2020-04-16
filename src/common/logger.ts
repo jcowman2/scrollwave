@@ -1,11 +1,13 @@
 export enum LogConfig {
   ReaderData = "ReaderData",
-  AnimatedReader = "AnimatedReader"
+  AnimatedReader = "AnimatedReader",
+  Timeline = "Timeline"
 }
 
 const SUPPRESS: LogConfig[] = [
   //
-  LogConfig.ReaderData
+  LogConfig.ReaderData,
+  LogConfig.AnimatedReader
 ];
 
 const createLogger = <S extends string>(module: LogConfig) => {
@@ -41,6 +43,13 @@ export enum ReaderDataLogConfig {
 
 export enum AnimatedReaderLogConfig {
   HandleRegionEvent = "handleRegionEvent"
+}
+
+export enum TimelineLogConfig {
+  NewTimelineManager = "NewTimelineManagerEffect",
+  UpdateInterval = "UpdateIntervalEffect",
+  Tick = "TickEffect",
+  ValueUpdated = "ValueUpdatedEffect"
 }
 
 export default createLogger;

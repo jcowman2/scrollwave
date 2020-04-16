@@ -15,7 +15,7 @@ export interface ITickEvent {
   value: number;
 }
 
-export type IRegionState<V> = { [K in keyof V]: IRegionStateProperty<V[K]> };
+export type IRegionState<V> = { [K in keyof V]?: IRegionStateProperty<V[K]> };
 export type IRegionStateProperty<T = any> = { from: T; to: T };
 
 export interface IRegionEvent<

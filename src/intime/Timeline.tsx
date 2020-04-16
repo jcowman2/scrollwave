@@ -1,69 +1,102 @@
 import React, { PropsWithChildren, useEffect } from "react";
 import { ITrackRegion, IRegionEvent, ITickEvent } from "./intime.types";
 import { TimelineManager } from "./timelineManager";
+import logger, { LogConfig, TimelineLogConfig as LC } from "../common/logger";
+
+const LOG = logger(LogConfig.Timeline);
 
 const DEFAULT_INTERVAL_LENGTH = 100;
 
-export interface ITimelineProps<RegionType extends string> {
-  track: ITrackRegion<RegionType>[];
+export interface ITimelineProps<
+  RegionType extends string,
+  Data = {},
+  State extends object = {}
+> {
+  track: ITrackRegion<RegionType, Data, State>[];
   value: number;
   playing: boolean;
   interval?: number;
   onTick: (event: ITickEvent) => void;
-  onRegion: (event: IRegionEvent<RegionType>) => void;
+  onRegion: (event: IRegionEvent<RegionType, Data, State>) => void;
 }
 
-const Timeline = <RegionType extends string>(
-  props: PropsWithChildren<ITimelineProps<RegionType>>
+const Timeline = <
+  RegionType extends string,
+  Data = {},
+  State extends object = {}
+>(
+  props: PropsWithChildren<ITimelineProps<RegionType, Data, State>>
 ) => {
   const manager = React.useRef<TimelineManager>();
   const interval = React.useRef<NodeJS.Timeout>();
   const [queued, setQueued] = React.useState(0);
   const [lastTick, setLastTick] = React.useState(0);
 
+  const {
+    onTick,
+    value,
+    track,
+    playing,
+    interval: intervalProp,
+    onRegion
+  } = props;
+
   React.useEffect(() => {
+    LOG.log(LC.Tick, { value, queued });
     if (queued) {
       setQueued(0);
-      setLastTick(props.value);
-      props.onTick({ value: props.value + queued });
+      setLastTick(value);
+
+      const newValue = value + queued;
+      onTick({ value: newValue });
     }
-  }, [props, queued]);
+  }, [onTick, value, queued]);
 
   React.useEffect(() => {
-    manager.current = new TimelineManager(props.track);
-  }, [props.track]);
+    LOG.log(LC.NewTimelineManager, { track });
+    manager.current = new TimelineManager(track);
+  }, [track]);
 
   React.useEffect(() => {
+    LOG.log(LC.UpdateInterval, {
+      playing,
+      intervalProp,
+      intervalRef: interval.current
+    });
+
     if (interval.current) {
-      clearTimeout(interval.current);
+      clearInterval(interval.current);
+      interval.current = undefined;
     }
-    if (props.playing) {
-      const intervalLen = props.interval || DEFAULT_INTERVAL_LENGTH;
+    if (playing) {
+      const intervalLen = intervalProp || DEFAULT_INTERVAL_LENGTH;
 
       interval.current = setInterval(
         () => setQueued(q => q + intervalLen),
         intervalLen
       );
     }
-  }, [props.playing, props.interval]);
+  }, [playing, intervalProp]);
 
   React.useEffect(() => {
-    if (!manager.current || lastTick === props.value) {
+    LOG.log(LC.ValueUpdated, { value, lastTick });
+
+    if (!manager.current || lastTick === value) {
       return;
     }
 
     let properLastTick = lastTick;
-    if (lastTick > props.value) {
-      properLastTick = props.value;
+    if (lastTick < value) {
+      properLastTick = value;
       setLastTick(properLastTick);
     }
 
     const events = manager.current.getEventsSinceLastTick(
       properLastTick,
-      props.value
+      value
     );
-    events.forEach(props.onRegion);
-  }, [props.onRegion, props.value, lastTick]);
+    events.forEach(onRegion);
+  }, [onRegion, value, lastTick]);
 
   return null;
 };

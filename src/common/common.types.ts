@@ -2,6 +2,7 @@ import Draft from "draft-js";
 import { ReaderEventType } from "./enum";
 import { getTransitionLength, getWordCount } from "./utils";
 import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
+import { IRegionState } from "../intime/intime.types";
 
 const LOG = logger<LC>(LogConfig.ReaderData);
 
@@ -25,12 +26,20 @@ export interface IReaderRegionData {
   span?: ISpan;
 }
 
+export interface IReaderRegionState {
+  blockOpacity: number;
+  spanOpacity: number;
+  loadedSpans: ISpan[];
+  activeSpan?: ISpan;
+}
+
 export interface IReaderRegion {
   type: ReaderEventType;
   start: number;
   end: number;
   duration: number;
   data: IReaderRegionData;
+  state: IRegionState<IReaderRegionState>;
 }
 
 interface ITrackingSpan {
@@ -83,13 +92,14 @@ export class ReaderData {
 
       events.push({
         type,
+        start: currentTime,
+        end: currentTime + duration,
+        duration,
         data: {
           block,
           span
         },
-        start: currentTime,
-        end: currentTime + duration,
-        duration
+        state: {}
       });
       currentTime += duration;
     };

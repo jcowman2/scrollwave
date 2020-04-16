@@ -21,7 +21,7 @@ export class TimelineManager {
   getEventsSinceLastTick = (
     last: number,
     current: number
-  ): IRegionEvent<any>[] => {
+  ): IRegionEvent<any, any, any>[] => {
     const regions = this.track.filter(
       region =>
         this.isWithinRegion(region, last) ||
