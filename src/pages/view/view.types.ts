@@ -4,10 +4,6 @@ export interface IBlockAnimationState {
   opacity: number;
 }
 
-// export interface IAnimatedBlockData extends IBlock {
-//   isActive: boolean;
-// }
-
 export type AnimateHandlerReturn<T> = {
   [K in keyof T]?: T[K] | Array<T[K]>;
 } & {

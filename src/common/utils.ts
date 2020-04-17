@@ -39,3 +39,28 @@ export const getTransitionLength = (event: ReaderEventType) => {
 };
 
 export const getWordCount = (text: string) => text.split(" ").length;
+
+const PUNC = [".", "?", "!", ","];
+export const splitParagraph = (blockId: string, text: string) => {
+  let spans = [text];
+  for (let punc of PUNC) {
+    const tempSpans: string[] = [];
+    spans.forEach(span => {
+      tempSpans.push(
+        ...span
+          .split(punc)
+          .filter(s => s.trim().length)
+          .map((s, sIdx, arr) => s + (sIdx < arr.length - 1 ? punc : ""))
+      );
+
+      if (span.endsWith(punc)) {
+        tempSpans[tempSpans.length - 1] += punc;
+      }
+    });
+    spans = tempSpans;
+  }
+  return spans.map((span, spanIdx) => ({
+    id: `${blockId}_$${spanIdx}`,
+    text: span
+  }));
+};

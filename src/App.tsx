@@ -5,6 +5,7 @@ import { Route } from "./common/enum";
 import FullPage from "./common/FullPage";
 import ViewPage from "./pages/view/ViewPage";
 import { ReaderData } from "./common/common.types";
+import { splitParagraph } from "./common/utils";
 
 const DEBUG = true;
 const DEBUG_READER_DATA = new ReaderData(
@@ -12,27 +13,17 @@ const DEBUG_READER_DATA = new ReaderData(
     { id: "b1", spans: [{ id: "1s1", text: "Leaflets" }] },
     {
       id: "b2",
-      spans: [
-        {
-          id: "2s1",
-          text: "At dusk they pour from the sky."
-        },
-        {
-          id: "2s2",
-          text:
-            "They blow across the ramparts, turn cartwheels over rooftops, flutter into the ravines between houses. Entire streets swirl with them, flashing white against the cobbles. Urgent message to the inhabitants of this town, they say. Depart immediately to open country."
-        }
-      ]
+      spans: splitParagraph(
+        "b2",
+        "At dusk they pour from the sky. They blow across the ramparts, turn cartwheels over rooftops, flutter into the ravines between houses. Entire streets swirl with them, flashing white against the cobbles. Urgent message to the inhabitants of this town, they say. Depart immediately to open country."
+      )
     },
     {
       id: "b3",
-      spans: [
-        {
-          id: "3s1",
-          text:
-            "The tide climbs. The moon hangs small and yellow and gibbous. On the rooftops of beachfront hotels to the east, and in the gardens behind them, a half-dozen American artillery units drop incendiary rounds into the mouths of mortars."
-        }
-      ]
+      spans: splitParagraph(
+        "b3",
+        "The tide climbs. The moon hangs small and yellow and gibbous. On the rooftops of beachfront hotels to the east, and in the gardens behind them, a half-dozen American artillery units drop incendiary rounds into the mouths of mortars."
+      )
     }
   ],
   { length: 20000 }
