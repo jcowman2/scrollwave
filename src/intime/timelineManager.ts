@@ -12,10 +12,12 @@ type IInterpolateStateResult = {
 };
 
 export class TimelineManager {
+  public length: number;
   private track: ITrackRegion[];
 
   constructor(track: ITrackRegion[]) {
     this.track = track; // TODO - Validation
+    this.length = track[track.length - 1].end;
   }
 
   getEventsSinceLastTick = (

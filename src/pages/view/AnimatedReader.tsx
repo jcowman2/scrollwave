@@ -19,6 +19,7 @@ export interface IAnimatedReaderProps {
   isPlaying: boolean;
   value: number;
   onTick: (event: ITickEvent) => void;
+  onEnded: () => void;
 }
 
 const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
@@ -47,6 +48,7 @@ const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
         playing={props.isPlaying}
         onTick={props.onTick}
         onRegion={handleRegionEvent}
+        onEnded={props.onEnded}
       />
       {elements}
     </>

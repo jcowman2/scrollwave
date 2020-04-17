@@ -7,7 +7,8 @@ export enum LogConfig {
 const SUPPRESS: LogConfig[] = [
   //
   LogConfig.ReaderData,
-  LogConfig.AnimatedReader
+  LogConfig.AnimatedReader,
+  LogConfig.Timeline
 ];
 
 const createLogger = <S extends string>(module: LogConfig) => {
@@ -28,17 +29,12 @@ const createLogger = <S extends string>(module: LogConfig) => {
   };
 };
 
-export enum TimingControlLogConfig {
-  PlayPause = "PlayPause",
-  InitialSetTimeRemaining = "InitialSetTimeRemaining",
-  SetTimeout = "SetTimeout"
-}
-
 export enum ReaderDataLogConfig {
   AssembleEvents = "AssembleEvents",
   GetNextSpanWithStart = "GetNextSpanWithStart",
   GetSpanTime = "GetSpanTime",
-  GetTransitionTimes = "GetTransitionTimes"
+  GetTransitionTimes = "GetTransitionTimes",
+  FromEditor = "FromEditor"
 }
 
 export enum AnimatedReaderLogConfig {

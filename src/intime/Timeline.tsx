@@ -18,6 +18,7 @@ export interface ITimelineProps<
   interval?: number;
   onTick: (event: ITickEvent) => void;
   onRegion: (event: IRegionEvent<RegionType, Data, State>) => void;
+  onEnded: () => void;
 }
 
 const Timeline = <
@@ -38,19 +39,29 @@ const Timeline = <
     track,
     playing,
     interval: intervalProp,
-    onRegion
+    onRegion,
+    onEnded
   } = props;
 
   React.useEffect(() => {
     LOG.log(LC.Tick, { value, queued });
+    if (!manager.current) {
+      return;
+    }
+
     if (queued) {
       setQueued(0);
       setLastTick(value);
 
-      const newValue = value + queued;
+      let newValue = value + queued;
+
+      if (newValue >= manager.current.length) {
+        newValue = manager.current.length;
+        onEnded();
+      }
       onTick({ value: newValue });
     }
-  }, [onTick, value, queued]);
+  }, [onTick, value, queued, onEnded]);
 
   React.useEffect(() => {
     LOG.log(LC.NewTimelineManager, { track });

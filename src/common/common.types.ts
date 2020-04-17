@@ -310,7 +310,7 @@ export class ReaderData {
 
   public static fromEditor(contentState: Draft.ContentState): ReaderData {
     const draftBlocks = contentState.getBlocksAsArray();
-    console.log("ReaderData::fromEditor draftBlocks", draftBlocks);
+    LOG.log(LC.FromEditor, { draftBlocks });
 
     const readerBlocks = draftBlocks.map(draftBlock => ({
       id: draftBlock.getKey(),
