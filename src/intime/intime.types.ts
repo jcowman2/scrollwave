@@ -1,9 +1,5 @@
-export interface ITrackRegion<
-  RegionType extends string = string,
-  Data = {},
-  State extends object = {}
-> {
-  type: RegionType;
+export interface ITrackRegion<Data = {}, State extends object = {}> {
+  id: string;
   start: number;
   end: number;
   duration: number;
@@ -16,15 +12,15 @@ export interface ITickEvent {
 }
 
 export type IRegionState<V> = { [K in keyof V]?: IRegionStateProperty<V[K]> };
-export type IRegionStateProperty<T = any> = { from: T; to: T };
+export type IRegionStateProperty<T = any> = {
+  from?: T;
+  to?: T;
+  set?: T | ((previous: T) => T);
+};
 
-export interface IRegionEvent<
-  RegionType extends string = string,
-  Data = {},
-  State extends object = {}
-> {
+export interface IRegionEvent<Data = {}, State extends object = {}> {
   value: number;
-  region: ITrackRegion<RegionType, Data, State>;
+  region: ITrackRegion<Data, State>;
   state: State;
   progress: number;
 }

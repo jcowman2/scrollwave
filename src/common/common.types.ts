@@ -2,7 +2,7 @@ import Draft from "draft-js";
 import { ReaderEventType } from "./enum";
 import { getTransitionLength, getWordCount } from "./utils";
 import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
-import { IRegionState } from "../intime/intime.types";
+import { IRegionState, ITrackRegion } from "../intime/intime.types";
 
 const LOG = logger<LC>(LogConfig.ReaderData);
 
@@ -22,6 +22,7 @@ export interface ISpan {
 }
 
 export interface IReaderRegionData {
+  type: ReaderEventType;
   block: IBlock;
   span?: ISpan;
 }
@@ -30,17 +31,10 @@ export interface IReaderRegionState {
   blockOpacity: number;
   spanOpacity: number;
   loadedSpans: ISpan[];
-  activeSpan?: ISpan;
+  activeSpan: ISpan | null;
 }
 
-export interface IReaderRegion {
-  type: ReaderEventType;
-  start: number;
-  end: number;
-  duration: number;
-  data: IReaderRegionData;
-  state: IRegionState<IReaderRegionState>;
-}
+export type IReaderRegion = ITrackRegion<IReaderRegionData, IReaderRegionState>;
 
 interface ITrackingSpan {
   span: ISpan;
@@ -75,10 +69,12 @@ export class ReaderData {
     );
 
     let currentTime = 0;
+    let index = 0;
 
     const _pushEvent = (
       type: ReaderEventType,
       duration: number,
+      state: IRegionState<IReaderRegionState>,
       block: IBlock,
       span?: ISpan
     ) => {
@@ -91,15 +87,16 @@ export class ReaderData {
       });
 
       events.push({
-        type,
+        id: `${index++}`,
         start: currentTime,
         end: currentTime + duration,
         duration,
         data: {
+          type,
           block,
           span
         },
-        state: {}
+        state
       });
       currentTime += duration;
     };
@@ -107,7 +104,7 @@ export class ReaderData {
     const firstSpan = blocks[0] && blocks[0].spans[0];
     const startDelay = (firstSpan && firstSpan.start) || 0;
 
-    _pushEvent(ReaderEventType.READER_START, startDelay, blocks[0]);
+    _pushEvent(ReaderEventType.READER_START, startDelay, {}, blocks[0]);
 
     let nextSpanWithStart = this.getNextSpanWithStart(
       blocks,
@@ -128,7 +125,14 @@ export class ReaderData {
     });
 
     blocks.forEach((block, blockIdx) => {
-      _pushEvent(ReaderEventType.BLOCK_ENTER, 0, block);
+      _pushEvent(
+        ReaderEventType.BLOCK_ENTER,
+        0,
+        {
+          blockOpacity: { set: 1 }
+        },
+        block
+      );
 
       block.spans.forEach((span, spanIdx) => {
         if (nextSpanWithStart.span.id === span.id) {
@@ -161,24 +165,44 @@ export class ReaderData {
           transitionTimes.blockLeaveLen
         );
 
-        // const enterLen = Math.min(defaultSpanEnterLen, spanTime);
         _pushEvent(
           ReaderEventType.SPAN_WILL_ENTER,
           transitionTimes.spanEnterLen,
+          {
+            spanOpacity: { from: 0, to: 1 },
+            activeSpan: { set: span }
+          },
           block,
           span
         );
-
-        // const showLen = Math.max(spanTime - enterLen, 0);
-        _pushEvent(ReaderEventType.SPAN_ENTER, spanTime, block, span);
+        _pushEvent(
+          ReaderEventType.SPAN_ENTER,
+          spanTime,
+          {
+            activeSpan: { set: null },
+            loadedSpans: {
+              set: spans => spans.concat(span)
+            }
+          },
+          block,
+          span
+        );
       });
 
       _pushEvent(
         ReaderEventType.BLOCK_WILL_LEAVE,
         transitionTimes.blockLeaveLen,
+        {
+          blockOpacity: { from: 1, to: 0 }
+        },
         block
       );
-      _pushEvent(ReaderEventType.BLOCK_LEAVE, 0, block);
+      _pushEvent(
+        ReaderEventType.BLOCK_LEAVE,
+        0,
+        { loadedSpans: { set: [] } },
+        block
+      );
     });
 
     return events;

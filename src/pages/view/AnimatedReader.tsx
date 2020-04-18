@@ -6,7 +6,6 @@ import {
   IReaderRegionState
 } from "../../common/common.types";
 import { ITickEvent, IRegionEvent } from "../../intime/intime.types";
-import { ReaderEventType } from "../../common/enum";
 import logger, {
   AnimatedReaderLogConfig as LC,
   LogConfig
@@ -26,31 +25,46 @@ const AnimatedReader: React.FC<IAnimatedReaderProps> = props => {
   const [elements, setElements] = React.useState<JSX.Element>();
 
   const handleRegionEvent = (
-    event: IRegionEvent<ReaderEventType, IReaderRegionData, IReaderRegionState>
+    event: IRegionEvent<IReaderRegionData, IReaderRegionState>
   ) => {
     LOG.log(LC.HandleRegionEvent, { event });
     setElements(
-      <div>
-        {event.region.type}
-        <br />
-        {event.progress}
-        <br />
-        {event.region.data?.span?.text}
-      </div>
+      <p style={{ opacity: event.state.blockOpacity }}>
+        {event.state.loadedSpans.map(span => span.text).join(" ")}
+        {event.state.activeSpan && (
+          <>
+            {" "}
+            <span style={{ opacity: event.state.spanOpacity }}>
+              {event.state.activeSpan.text}
+            </span>
+          </>
+        )}
+      </p>
     );
   };
 
+  const defaultState = React.useMemo<IReaderRegionState>(
+    () => ({
+      blockOpacity: 1,
+      spanOpacity: 0,
+      loadedSpans: [],
+      activeSpan: null
+    }),
+    []
+  );
+
   return (
     <>
-      <Timeline<ReaderEventType, IReaderRegionData, IReaderRegionState>
+      <Timeline<IReaderRegionData, IReaderRegionState>
         track={props.regions}
+        defaultState={defaultState}
         value={props.value}
         playing={props.isPlaying}
         onTick={props.onTick}
         onRegion={handleRegionEvent}
         onEnded={props.onEnded}
       />
-      {elements}
+      <div className="TextViewport">{elements}</div>
     </>
   );
 };

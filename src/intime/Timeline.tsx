@@ -5,38 +5,33 @@ import logger, { LogConfig, TimelineLogConfig as LC } from "../common/logger";
 
 const LOG = logger(LogConfig.Timeline);
 
-const DEFAULT_INTERVAL_LENGTH = 100;
+const DEFAULT_INTERVAL_LENGTH = 10;
 
-export interface ITimelineProps<
-  RegionType extends string,
-  Data = {},
-  State extends object = {}
-> {
-  track: ITrackRegion<RegionType, Data, State>[];
+export interface ITimelineProps<D, S extends object = {}> {
+  track: ITrackRegion<D, S>[];
+  defaultState: S;
   value: number;
   playing: boolean;
   interval?: number;
   onTick: (event: ITickEvent) => void;
-  onRegion: (event: IRegionEvent<RegionType, Data, State>) => void;
+  onRegion: (event: IRegionEvent<D, S>) => void;
   onEnded: () => void;
 }
 
-const Timeline = <
-  RegionType extends string,
-  Data = {},
-  State extends object = {}
->(
-  props: PropsWithChildren<ITimelineProps<RegionType, Data, State>>
+const Timeline = <D, S extends object = {}>(
+  props: PropsWithChildren<ITimelineProps<D, S>>
 ) => {
-  const manager = React.useRef<TimelineManager>();
+  const manager = React.useRef<TimelineManager<D, S>>();
   const interval = React.useRef<NodeJS.Timeout>();
   const [queued, setQueued] = React.useState(0);
   const [lastTick, setLastTick] = React.useState(0);
+  const [hasStarted, setHasStarted] = React.useState(false);
 
   const {
     onTick,
     value,
     track,
+    defaultState,
     playing,
     interval: intervalProp,
     onRegion,
@@ -57,6 +52,7 @@ const Timeline = <
 
       if (newValue >= manager.current.length) {
         newValue = manager.current.length;
+        setHasStarted(false);
         onEnded();
       }
       onTick({ value: newValue });
@@ -64,9 +60,11 @@ const Timeline = <
   }, [onTick, value, queued, onEnded]);
 
   React.useEffect(() => {
-    LOG.log(LC.NewTimelineManager, { track });
-    manager.current = new TimelineManager(track);
-  }, [track]);
+    LOG.log(LC.NewTimelineManager, { track, defaultState, hasStarted });
+    if (hasStarted) {
+      manager.current = new TimelineManager(track, defaultState);
+    }
+  }, [track, defaultState, hasStarted]);
 
   React.useEffect(() => {
     LOG.log(LC.UpdateInterval, {
@@ -86,6 +84,7 @@ const Timeline = <
         () => setQueued(q => q + intervalLen),
         intervalLen
       );
+      setHasStarted(true);
     }
   }, [playing, intervalProp]);
 
@@ -96,16 +95,9 @@ const Timeline = <
       return;
     }
 
-    let properLastTick = lastTick;
-    if (lastTick < value) {
-      properLastTick = value;
-      setLastTick(properLastTick);
-    }
+    setLastTick(value);
 
-    const events = manager.current.getEventsSinceLastTick(
-      properLastTick,
-      value
-    );
+    const events = manager.current.getEventsSinceLastTick(lastTick, value);
     events.forEach(onRegion);
   }, [onRegion, value, lastTick]);
 

@@ -1,31 +1,39 @@
 export enum LogConfig {
   ReaderData = "ReaderData",
   AnimatedReader = "AnimatedReader",
-  Timeline = "Timeline"
+  Timeline = "Timeline",
+  TimelineManager = "TimelineManager"
 }
 
 const SUPPRESS: LogConfig[] = [
   //
   LogConfig.ReaderData,
   LogConfig.AnimatedReader,
-  LogConfig.Timeline
+  LogConfig.Timeline,
+  LogConfig.TimelineManager
 ];
 
 const createLogger = <S extends string>(module: LogConfig) => {
-  if (SUPPRESS.includes(module)) {
-    return {
-      log: () => {}
-    };
-  }
+  const noop = () => {};
+  const logFn = (nativeFn: (...d: any[]) => void, deepCopy = true) => (
+    scope?: S,
+    ...data: any[]
+  ) =>
+    nativeFn(
+      `${module}::${scope || "enter"}`,
+      ...(deepCopy
+        ? data.map(d =>
+            typeof d === "object" ? JSON.parse(JSON.stringify(d)) : d
+          )
+        : data)
+    );
+
+  const suppressed = SUPPRESS.includes(module);
 
   return {
-    log: (scope?: S, ...data: any[]) =>
-      console.log(
-        `${module}::${scope || "enter"}`,
-        ...data.map(d =>
-          typeof d === "object" ? JSON.parse(JSON.stringify(d)) : d
-        )
-      )
+    log: suppressed ? noop : logFn(console.log),
+    logNoCopy: suppressed ? noop : logFn(console.log, false),
+    error: logFn(console.error)
   };
 };
 
@@ -46,6 +54,12 @@ export enum TimelineLogConfig {
   UpdateInterval = "UpdateIntervalEffect",
   Tick = "TickEffect",
   ValueUpdated = "ValueUpdatedEffect"
+}
+
+export enum TimelineManagerLogConfig {
+  Construct = "Construct",
+  GetEventsSinceLastTick = "GetEventsSinceLastTick",
+  InterpolateState = "InterpolateState"
 }
 
 export default createLogger;
