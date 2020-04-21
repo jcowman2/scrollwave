@@ -346,6 +346,6 @@ export class ReaderData {
       ]
     }));
 
-    return new ReaderData(readerBlocks, { length: 10 });
+    return new ReaderData(readerBlocks, { length: 20000 });
   }
 }

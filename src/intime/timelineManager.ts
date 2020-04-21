@@ -71,7 +71,7 @@ export class TimelineManager<Data, State extends object> {
       return true;
     }
 
-    if (region.start <= last && region.end >= last) {
+    if (region.start <= last && region.end > last) {
       return true;
     }
   };
