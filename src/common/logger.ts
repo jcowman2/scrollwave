@@ -7,7 +7,7 @@ export enum LogConfig {
 
 const SUPPRESS: LogConfig[] = [
   //
-  LogConfig.ReaderData,
+  // LogConfig.ReaderData,
   LogConfig.AnimatedReader,
   LogConfig.Timeline,
   LogConfig.TimelineManager

@@ -1,13 +1,16 @@
 import Draft from "draft-js";
 import { ReaderEventType } from "./enum";
-import { getTransitionLength, getWordCount } from "./utils";
+import { getTransitionLength, getWordCount, splitParagraph } from "./utils";
 import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
 import { IRegionState, ITrackRegion } from "../intime/intime.types";
 
 const LOG = logger<LC>(LogConfig.ReaderData);
 
 export interface IAudioFile {
+  file: File;
+  /** in milliseconds */
   length: number;
+  element: HTMLAudioElement;
 }
 
 export interface IBlock {
@@ -52,7 +55,6 @@ export class ReaderData {
   constructor(blocks: IBlock[], audio: IAudioFile) {
     this.blocks = blocks;
     this.audio = audio;
-
     this.events = this.assembleEvents(blocks);
   }
 
@@ -332,20 +334,39 @@ export class ReaderData {
     return spanTime;
   };
 
-  public static fromEditor(contentState: Draft.ContentState): ReaderData {
+  public static loadAudioElement = async (file: File): Promise<IAudioFile> => {
+    return new Promise((resolve, reject) => {
+      try {
+        const element = document.createElement("audio");
+        const url = URL.createObjectURL(file);
+        element.src = url;
+
+        const callback = () => {
+          element.removeEventListener("loadedmetadata", callback);
+          resolve({ file, element, length: element.duration * 1000 });
+        };
+
+        element.addEventListener("loadedmetadata", callback);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  };
+
+  public static fromEditor = async (
+    contentState: Draft.ContentState,
+    audio: File
+  ): Promise<ReaderData> => {
     const draftBlocks = contentState.getBlocksAsArray();
     LOG.log(LC.FromEditor, { draftBlocks });
 
     const readerBlocks = draftBlocks.map(draftBlock => ({
       id: draftBlock.getKey(),
-      spans: [
-        {
-          id: draftBlock.getKey() + "_0", // TODO
-          text: draftBlock.getText()
-        }
-      ]
+      spans: splitParagraph(draftBlock.getKey(), draftBlock.getText())
     }));
 
-    return new ReaderData(readerBlocks, { length: 20000 });
-  }
+    const audioElement = await ReaderData.loadAudioElement(audio);
+    console.log(audioElement);
+    return new ReaderData(readerBlocks, audioElement);
+  };
 }

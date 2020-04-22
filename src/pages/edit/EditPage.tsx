@@ -21,6 +21,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
         <nav
           className="navbar FadeIn"
           style={audio ? { animationPlayState: "running" } : {}}
+          // style={{ animationPlayState: "running" }}
         >
           <div className="container">
             <div className="navbar-menu">
@@ -28,9 +29,12 @@ const EditPage: React.FC<IEditPageProps> = props => {
                 <div className="navbar-item">
                   <button
                     className="button NavButton"
-                    onClick={() => {
+                    onClick={async () => {
                       const contentState = textEditRef.current?.getContentState();
-                      const readerData = ReaderData.fromEditor(contentState!);
+                      const readerData = await ReaderData.fromEditor(
+                        contentState!,
+                        audio!
+                      );
                       props.onWatch(readerData);
                     }}
                   >

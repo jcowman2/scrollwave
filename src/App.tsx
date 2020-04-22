@@ -7,36 +7,36 @@ import ViewPage from "./pages/view/ViewPage";
 import { ReaderData } from "./common/common.types";
 import { splitParagraph } from "./common/utils";
 
-const DEBUG = true;
-const DEBUG_READER_DATA = new ReaderData(
-  [
-    { id: "b1", spans: [{ id: "1s1", text: "Leaflets" }] },
-    {
-      id: "b2",
-      spans: splitParagraph(
-        "b2",
-        "At dusk they pour from the sky. They blow across the ramparts, turn cartwheels over rooftops, flutter into the ravines between houses. Entire streets swirl with them, flashing white against the cobbles. Urgent message to the inhabitants of this town, they say. Depart immediately to open country."
-      )
-    },
-    {
-      id: "b3",
-      spans: splitParagraph(
-        "b3",
-        "The tide climbs. The moon hangs small and yellow and gibbous. On the rooftops of beachfront hotels to the east, and in the gardens behind them, a half-dozen American artillery units drop incendiary rounds into the mouths of mortars."
-      )
-    }
-  ],
-  { length: 20000 }
-);
+const DEBUG = false;
+// const DEBUG_READER_DATA = new ReaderData(
+//   [
+//     { id: "b1", spans: [{ id: "1s1", text: "Leaflets" }] },
+//     {
+//       id: "b2",
+//       spans: splitParagraph(
+//         "b2",
+//         "At dusk they pour from the sky. They blow across the ramparts, turn cartwheels over rooftops, flutter into the ravines between houses. Entire streets swirl with them, flashing white against the cobbles. Urgent message to the inhabitants of this town, they say. Depart immediately to open country."
+//       )
+//     },
+//     {
+//       id: "b3",
+//       spans: splitParagraph(
+//         "b3",
+//         "The tide climbs. The moon hangs small and yellow and gibbous. On the rooftops of beachfront hotels to the east, and in the gardens behind them, a half-dozen American artillery units drop incendiary rounds into the mouths of mortars."
+//       )
+//     }
+//   ],
+//   { length: 20000 }
+// );
 
 function App() {
   const [route, setRoute] = React.useState(Route.EDIT);
   const [readerData, setReaderData] = React.useState<ReaderData>();
 
-  if (DEBUG && route !== Route.VIEW) {
-    setRoute(Route.VIEW);
-    setReaderData(DEBUG_READER_DATA);
-  }
+  // if (DEBUG && route !== Route.VIEW) {
+  //   setRoute(Route.VIEW);
+  //   setReaderData(DEBUG_READER_DATA);
+  // }
 
   let currentPage;
   switch (route) {
@@ -51,7 +51,7 @@ function App() {
       );
       break;
     case Route.VIEW:
-      currentPage = <ViewPage readerData={readerData!} />;
+      currentPage = <ViewPage readerData={readerData} />;
       break;
     default:
       currentPage = <FullPage />;
