@@ -24,3 +24,11 @@ export enum ReaderEventType {
   BLOCK_WILL_LEAVE = "Block Will Leave",
   BLOCK_LEAVE = "Block Leave"
 }
+
+export enum Key {
+  PERIOD = 190
+}
+
+export enum KeybindEvent {
+  INSERT_ANCHOR = "Insert Anchor"
+}

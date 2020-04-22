@@ -21,7 +21,6 @@ const EditPage: React.FC<IEditPageProps> = props => {
         <nav
           className="navbar FadeIn"
           style={audio ? { animationPlayState: "running" } : {}}
-          // style={{ animationPlayState: "running" }}
         >
           <div className="container">
             <div className="navbar-menu">

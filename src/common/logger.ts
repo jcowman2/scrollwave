@@ -2,12 +2,13 @@ export enum LogConfig {
   ReaderData = "ReaderData",
   AnimatedReader = "AnimatedReader",
   Timeline = "Timeline",
-  TimelineManager = "TimelineManager"
+  TimelineManager = "TimelineManager",
+  AnchorBlock = "AnchorBlock"
 }
 
 const SUPPRESS: LogConfig[] = [
   //
-  // LogConfig.ReaderData,
+  LogConfig.ReaderData,
   LogConfig.AnimatedReader,
   LogConfig.Timeline,
   LogConfig.TimelineManager

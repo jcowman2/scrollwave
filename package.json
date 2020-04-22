@@ -24,6 +24,7 @@
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-keyboard-event-handler": "^1.5.4",
     "react-move": "^6.1.0",
     "react-scripts": "3.4.0",
     "typescript": "^3.7.5",
