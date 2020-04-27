@@ -101,7 +101,7 @@ export const useAudioMarkers = (
       return;
     }
 
-    const region = audioEditRef.current.addAnchor()!;
+    const region = audioEditRef.current.addAnchor(anchorId)!;
     const timestamp: Timestamp = {
       anchorId,
       region,

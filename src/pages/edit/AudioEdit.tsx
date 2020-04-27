@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import ReactDOM from "react-dom";
 import WaveSurfer from "wavesurfer.js";
 // @ts-ignore
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions";
@@ -6,6 +7,7 @@ import { Color } from "../../common/enum";
 import Loadable from "../../common/Loadable";
 import AudioControls from "../../common/AudioControls";
 import { Timestamp, Region } from "./edit.types";
+import RegionElementAnnotation from "./RegionElementAnnotation";
 
 export interface IAudioEditProps {
   audio: File;
@@ -13,7 +15,7 @@ export interface IAudioEditProps {
 }
 
 export interface IAudioEditRef {
-  addAnchor: () => Region | null;
+  addAnchor: (anchorId: string) => Region | null;
   removeAnchor: (region: Region) => void;
 }
 
@@ -47,12 +49,23 @@ const AudioEdit = React.forwardRef<IAudioEditRef, IAudioEditProps>(
       ws.on("finish", () => setIsPlaying(false));
       ws.on("error", () => props.onError());
 
+      ws.on("region-created", (evRegion: Region) => {
+        const regionElement = document.querySelectorAll(
+          `[data-id='${evRegion.id}']`
+        )[0];
+
+        ReactDOM.render(
+          <RegionElementAnnotation anchorId={evRegion.id} />,
+          regionElement
+        );
+      });
+
       surfer.current = ws;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.audio]);
 
     React.useImperativeHandle<IAudioEditRef, IAudioEditRef>(ref, () => ({
-      addAnchor: () => {
+      addAnchor: (anchorId: string) => {
         if (!surfer.current) {
           return null;
         }
@@ -60,13 +73,13 @@ const AudioEdit = React.forwardRef<IAudioEditRef, IAudioEditProps>(
         console.log(playhead);
 
         const region = surfer.current.addRegion({
+          id: anchorId,
           drag: false,
           resize: false,
           start: playhead,
           end: playhead + 0.03,
           color: "white"
         });
-        console.log("region", region);
 
         return region as Region;
       },
