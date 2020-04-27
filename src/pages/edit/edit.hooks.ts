@@ -13,6 +13,7 @@ export const useAnchorModifiers = (
   onRemoveAnchor: (id: string) => void
 ) => {
   const [anchors, setAnchors] = React.useState<string[]>([]);
+  const [lastAnchorId, setLastAnchorId] = React.useState(0);
 
   const addAnchor = (newAnchor: string) => {
     onAddAnchor(newAnchor);
@@ -25,7 +26,8 @@ export const useAnchorModifiers = (
       return;
     }
 
-    const anchorId = newId();
+    setLastAnchorId(lastAnchorId + 1);
+    const anchorId = `${lastAnchorId + 1}`;
 
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(

@@ -70,7 +70,6 @@ const AudioEdit = React.forwardRef<IAudioEditRef, IAudioEditProps>(
           return null;
         }
         const playhead = surfer.current.getCurrentTime();
-        console.log(playhead);
 
         const region = surfer.current.addRegion({
           id: anchorId,

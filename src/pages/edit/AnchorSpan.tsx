@@ -32,7 +32,7 @@ const AnchorSpan: React.FC<IAnchorSpanProps> = props => {
 
   return (
     <span key={anchorId} className="AnchorSpan">
-      {idx + 1}
+      {anchorId}
     </span>
   );
 };
