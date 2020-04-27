@@ -11,8 +11,11 @@ import { useAnchorModifiers } from "./edit.hooks";
 import { Key, KeybindEvent } from "../../common/enum";
 import { decorator } from "./AnchorSpan";
 import { AnchorContext } from "./edit.context";
+import ErrorModal from "./ErrorModal";
 
-export interface TextEditProps {}
+export interface TextEditProps {
+  canSetAnchors: boolean;
+}
 
 export interface TextEditRef {
   getContentState: () => ContentState;
@@ -29,14 +32,20 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
   props,
   ref
 ) {
+  const { canSetAnchors } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(
       ContentState.createFromText("Start writing your next masterpiece..."),
       decorator
     )
   );
+  const [error, setError] = React.useState<string | null>(null);
 
-  const { placeAnchor, anchors } = useAnchorModifiers(setEditorState);
+  const { placeAnchor, anchors } = useAnchorModifiers(
+    setEditorState,
+    canSetAnchors,
+    setError
+  );
 
   React.useImperativeHandle<TextEditRef, TextEditRef>(ref, () => ({
     getContentState: () => editorState.getCurrentContent()
@@ -60,6 +69,7 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
           handleKeyCommand={handleKeyCommand}
         />
       </div>
+      <ErrorModal message={error} onClose={() => setError(null)} />
     </AnchorContext.Provider>
   );
 });

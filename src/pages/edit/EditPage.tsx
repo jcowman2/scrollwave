@@ -47,7 +47,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
       }
     >
       <div className="TextEditContainer">
-        <TextEdit ref={textEditRef} />
+        <TextEdit ref={textEditRef} canSetAnchors={!!audio} />
       </div>
       <div className="AudioEditContainer">
         {audio ? (

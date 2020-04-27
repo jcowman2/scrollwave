@@ -4,8 +4,9 @@ export interface ICardModalProps {
   title: string;
   visible: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   submitDisabled?: boolean;
+  notifyOnly?: boolean;
 }
 
 const CardModal: React.FC<ICardModalProps> = props => {
@@ -27,16 +28,24 @@ const CardModal: React.FC<ICardModalProps> = props => {
         </header>
         <section className="modal-card-body">{props.children}</section>
         <footer className="modal-card-foot">
-          <button
-            className="button is-success"
-            onClick={!props.submitDisabled ? props.onSubmit : () => {}}
-            disabled={!!props.submitDisabled}
-          >
-            Submit
-          </button>
-          <button className="button" onClick={props.onClose}>
-            Cancel
-          </button>
+          {props.notifyOnly ? (
+            <button className="button" onClick={props.onClose}>
+              Okay
+            </button>
+          ) : (
+            <>
+              <button
+                className="button is-success"
+                onClick={!props.submitDisabled ? props.onSubmit : () => {}}
+                disabled={!!props.submitDisabled}
+              >
+                Submit
+              </button>
+              <button className="button" onClick={props.onClose}>
+                Cancel
+              </button>
+            </>
+          )}
         </footer>
       </div>
     </div>

@@ -9,7 +9,9 @@ import { EntityType } from "../../common/enum";
 import { newId } from "../../common/utils";
 
 export const useAnchorModifiers = (
-  setEditorState: (es: EditorState) => void
+  setEditorState: (es: EditorState) => void,
+  canSetAnchors: boolean,
+  setError: (message: string) => void
 ) => {
   const [anchors, setAnchors] = React.useState<string[]>([]);
 
@@ -18,6 +20,11 @@ export const useAnchorModifiers = (
   };
 
   const placeAnchor = (editorState: EditorState) => {
+    if (!canSetAnchors) {
+      setError("Upload audio before you can place anchors.");
+      return;
+    }
+
     const anchorId = newId();
 
     const contentState = editorState.getCurrentContent();
@@ -32,7 +39,7 @@ export const useAnchorModifiers = (
     if (
       initSelectionState.getStartOffset() !== initSelectionState.getEndOffset()
     ) {
-      console.log("cannot have things highlighted");
+      setError("You can't have anything highlighted when you add an anchor.");
       return;
     }
 
