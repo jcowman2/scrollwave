@@ -1,7 +1,6 @@
 import React from "react";
 import { EditorState, Modifier, convertToRaw } from "draft-js";
 import { EntityType } from "../../common/enum";
-import { newId } from "../../common/utils";
 import { Timestamp } from "./edit.types";
 import { IAudioEditRef } from "./AudioEdit";
 
@@ -22,7 +21,9 @@ export const useAnchorModifiers = (
 
   const placeAnchor = (editorState: EditorState) => {
     if (!canSetAnchors) {
-      setError("Upload audio before you can place anchors.");
+      setError(
+        "Can't place an anchor yet. Did you upload audio and switch out of manual mode?"
+      );
       return;
     }
 

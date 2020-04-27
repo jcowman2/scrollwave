@@ -6,6 +6,7 @@ import UploadAudioModal from "../UploadAudioModal";
 import FullPage from "../../common/FullPage";
 import { ReaderData } from "../../common/common.types";
 import { useAudioMarkers } from "./edit.hooks";
+import ErrorModal from "./ErrorModal";
 
 export interface IEditPageProps {
   onWatch: (readerData: ReaderData) => void;
@@ -13,6 +14,8 @@ export interface IEditPageProps {
 
 const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
+  const [isAutomaticMode, setAutomaticMode] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [audio, setAudio] = React.useState<File>();
   const textEditRef = React.useRef<TextEditRef>(null);
   const audioEditRef = React.useRef<IAudioEditRef>(null);
@@ -31,13 +34,36 @@ const EditPage: React.FC<IEditPageProps> = props => {
             <div className="navbar-menu">
               <div className="navbar-end">
                 <div className="navbar-item">
+                  <div className="field">
+                    <label className="checkbox">
+                      <input
+                        type="checkbox"
+                        checked={isAutomaticMode}
+                        onChange={() => {
+                          if (isAutomaticMode) {
+                            setAutomaticMode(false);
+                          } else {
+                            setError(
+                              "Once you change to manual mode, you can't switch back to automatic."
+                            );
+                          }
+                        }}
+                        style={{ marginRight: 4 }}
+                      />
+                      Automatic Mode
+                    </label>
+                  </div>
+                </div>
+                <div className="navbar-item">
                   <button
                     className="button NavButton"
                     onClick={async () => {
                       const contentState = textEditRef.current?.getContentState();
                       const readerData = await ReaderData.fromEditor(
                         contentState!,
-                        audio!
+                        audio!,
+                        isAutomaticMode,
+                        timestamps!
                       );
                       props.onWatch(readerData);
                     }}
@@ -54,7 +80,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
       <div className="TextEditContainer">
         <TextEdit
           ref={textEditRef}
-          canSetAnchors={!!audio}
+          canSetAnchors={audio !== undefined && !isAutomaticMode}
           onAddAnchor={handleAddAnchor}
           onRemoveAnchor={handleRemoveAnchor}
         />
@@ -89,6 +115,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
           setAudio(file);
         }}
       />
+      <ErrorModal message={error} onClose={() => setError(null)} />
     </FullPage>
   );
 };

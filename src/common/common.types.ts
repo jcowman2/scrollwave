@@ -3,6 +3,7 @@ import { ReaderEventType } from "./enum";
 import { getTransitionLength, getWordCount, splitParagraph } from "./utils";
 import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
 import { IRegionState, ITrackRegion } from "../intime/intime.types";
+import { Timestamp } from "../pages/edit/edit.types";
 
 const LOG = logger<LC>(LogConfig.ReaderData);
 
@@ -355,7 +356,9 @@ export class ReaderData {
 
   public static fromEditor = async (
     contentState: Draft.ContentState,
-    audio: File
+    audio: File,
+    automaticMode: boolean,
+    timestamps: Timestamp[]
   ): Promise<ReaderData> => {
     const draftBlocks = contentState.getBlocksAsArray();
     LOG.log(LC.FromEditor, { draftBlocks });
