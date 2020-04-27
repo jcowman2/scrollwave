@@ -32,10 +32,17 @@ const EditPage: React.FC<IEditPageProps> = props => {
         >
           <div className="container">
             <div className="navbar-menu">
+              {!isAutomaticMode && (
+                <div className="navbar-start">
+                  <div className="navbar-item NavbarText">
+                    Press Ctrl+. to insert an anchor at your cursor.
+                  </div>
+                </div>
+              )}
               <div className="navbar-end">
                 <div className="navbar-item">
                   <div className="field">
-                    <label className="checkbox">
+                    <label className="checkbox NavButton">
                       <input
                         type="checkbox"
                         checked={isAutomaticMode}

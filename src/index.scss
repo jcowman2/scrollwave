@@ -87,6 +87,21 @@ code {
   display: none;
 }
 
+.NavbarText {
+  opacity: 0.6;
+  animation-duration: 1s;
+  animation-name: text-fadein;
+}
+
+@keyframes text-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+
 .NavButton {
   opacity: 0.6;
 }

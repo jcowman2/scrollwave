@@ -24,7 +24,7 @@ export interface TextEditRef {
 }
 
 const keyBindingFn = (e: any) => {
-  if (e.keyCode == Key.PERIOD && KeyBindingUtil.hasCommandModifier(e)) {
+  if (e.keyCode == Key.PERIOD && KeyBindingUtil.isCtrlKeyCommand(e)) {
     return KeybindEvent.INSERT_ANCHOR;
   }
   return getDefaultKeyBinding(e);
