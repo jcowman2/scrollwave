@@ -14,7 +14,7 @@ export interface IAudioEditProps {
 
 export interface IAudioEditRef {
   addAnchor: () => Region | null;
-  removeAnchor: (regionId: string) => void;
+  removeAnchor: (region: Region) => void;
 }
 
 const AudioEdit = React.forwardRef<IAudioEditRef, IAudioEditProps>(
@@ -63,14 +63,16 @@ const AudioEdit = React.forwardRef<IAudioEditRef, IAudioEditProps>(
           drag: false,
           resize: false,
           start: playhead,
-          end: playhead + 0.1,
-          color: Color.TURQUOISE
+          end: playhead + 0.03,
+          color: "white"
         });
         console.log("region", region);
 
         return region as Region;
       },
-      removeAnchor: (regionId: string) => {}
+      removeAnchor: (region: Region) => {
+        region.remove();
+      }
     }));
 
     return (

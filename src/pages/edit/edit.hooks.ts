@@ -98,16 +98,30 @@ export const useAudioMarkers = (
 
   const handleAddAnchor = (anchorId: string) => {
     if (audioEditRef.current === null) {
-      console.log("ref is null");
       return;
     }
 
-    console.log("adding anchor");
-
-    audioEditRef.current.addAnchor();
+    const region = audioEditRef.current.addAnchor()!;
+    const timestamp: Timestamp = {
+      anchorId,
+      region,
+      position: region.start
+    };
+    setTimestamps([...timestamps, timestamp]);
   };
 
-  const handleRemoveAnchor = (anchorId: string) => {};
+  const handleRemoveAnchor = (anchorId: string) => {
+    if (audioEditRef.current === null) {
+      return;
+    }
+
+    const timestamp = timestamps.findIndex(t => t.anchorId === anchorId);
+    audioEditRef.current.removeAnchor(timestamps[timestamp].region);
+
+    const newTimestamps = [...timestamps];
+    newTimestamps.splice(timestamp, 1);
+    setTimestamps(newTimestamps);
+  };
 
   return { handleAddAnchor, handleRemoveAnchor, timestamps };
 };
