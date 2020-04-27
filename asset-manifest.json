@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/scrollwave/static/css/main.9ded1ac7.chunk.css",
-    "main.js": "/scrollwave/static/js/main.57e66e3a.chunk.js",
-    "main.js.map": "/scrollwave/static/js/main.57e66e3a.chunk.js.map",
+    "main.js": "/scrollwave/static/js/main.f4bf7070.chunk.js",
+    "main.js.map": "/scrollwave/static/js/main.f4bf7070.chunk.js.map",
     "runtime-main.js": "/scrollwave/static/js/runtime-main.abfb5158.js",
     "runtime-main.js.map": "/scrollwave/static/js/runtime-main.abfb5158.js.map",
     "static/js/2.130dc939.chunk.js": "/scrollwave/static/js/2.130dc939.chunk.js",
     "static/js/2.130dc939.chunk.js.map": "/scrollwave/static/js/2.130dc939.chunk.js.map",
     "index.html": "/scrollwave/index.html",
-    "precache-manifest.20ac3e540f12ae960465bc85c1254399.js": "/scrollwave/precache-manifest.20ac3e540f12ae960465bc85c1254399.js",
+    "precache-manifest.89ef552c35e0a8673c832f83a44f4ff1.js": "/scrollwave/precache-manifest.89ef552c35e0a8673c832f83a44f4ff1.js",
     "service-worker.js": "/scrollwave/service-worker.js",
     "static/css/main.9ded1ac7.chunk.css.map": "/scrollwave/static/css/main.9ded1ac7.chunk.css.map",
     "static/js/2.130dc939.chunk.js.LICENSE.txt": "/scrollwave/static/js/2.130dc939.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.abfb5158.js",
     "static/js/2.130dc939.chunk.js",
     "static/css/main.9ded1ac7.chunk.css",
-    "static/js/main.57e66e3a.chunk.js"
+    "static/js/main.f4bf7070.chunk.js"
   ]
 }
