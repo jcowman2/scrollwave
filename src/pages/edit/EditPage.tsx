@@ -1,10 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextEdit, { TextEditRef } from "./TextEdit";
-import AudioEdit from "./AudioEdit";
+import AudioEdit, { IAudioEditRef } from "./AudioEdit";
 import UploadAudioModal from "../UploadAudioModal";
 import FullPage from "../../common/FullPage";
 import { ReaderData } from "../../common/common.types";
+import { useAudioMarkers } from "./edit.hooks";
 
 export interface IEditPageProps {
   onWatch: (readerData: ReaderData) => void;
@@ -14,6 +15,10 @@ const EditPage: React.FC<IEditPageProps> = props => {
   const [isAudioModalVisible, setAudioModalVisible] = React.useState(false);
   const [audio, setAudio] = React.useState<File>();
   const textEditRef = React.useRef<TextEditRef>(null);
+  const audioEditRef = React.useRef<IAudioEditRef>(null);
+  const { handleAddAnchor, handleRemoveAnchor, timestamps } = useAudioMarkers(
+    audioEditRef
+  );
 
   return (
     <FullPage
@@ -47,7 +52,12 @@ const EditPage: React.FC<IEditPageProps> = props => {
       }
     >
       <div className="TextEditContainer">
-        <TextEdit ref={textEditRef} canSetAnchors={!!audio} />
+        <TextEdit
+          ref={textEditRef}
+          canSetAnchors={!!audio}
+          onAddAnchor={handleAddAnchor}
+          onRemoveAnchor={handleRemoveAnchor}
+        />
       </div>
       <div className="AudioEditContainer">
         {audio ? (
@@ -59,6 +69,7 @@ const EditPage: React.FC<IEditPageProps> = props => {
               );
               setAudio(undefined);
             }}
+            ref={audioEditRef}
           />
         ) : (
           <button

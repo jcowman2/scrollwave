@@ -1,21 +1,21 @@
 import React from "react";
-import {
-  EditorState,
-  AtomicBlockUtils,
-  Modifier,
-  SelectionState
-} from "draft-js";
+import { EditorState, Modifier, convertToRaw } from "draft-js";
 import { EntityType } from "../../common/enum";
 import { newId } from "../../common/utils";
+import { Timestamp } from "./edit.types";
+import { IAudioEditRef } from "./AudioEdit";
 
 export const useAnchorModifiers = (
   setEditorState: (es: EditorState) => void,
   canSetAnchors: boolean,
-  setError: (message: string) => void
+  setError: (message: string) => void,
+  onAddAnchor: (id: string) => void,
+  onRemoveAnchor: (id: string) => void
 ) => {
   const [anchors, setAnchors] = React.useState<string[]>([]);
 
   const addAnchor = (newAnchor: string) => {
+    onAddAnchor(newAnchor);
     setAnchors([...anchors, newAnchor]);
   };
 
@@ -61,5 +61,53 @@ export const useAnchorModifiers = (
     addAnchor(anchorId);
   };
 
-  return { placeAnchor, anchors };
+  const getAllAnchors = (editorState: EditorState) => {
+    const contentState = editorState.getCurrentContent();
+    const { entityMap } = convertToRaw(contentState);
+    const anchors = Object.values(entityMap)
+      .filter(entity => entity.type === EntityType.ANCHOR)
+      .map(entity => entity.data.id);
+    return anchors;
+  };
+
+  const checkForDeletedAnchors = (
+    oldState: EditorState,
+    newState: EditorState
+  ) => {
+    const oldAnchors = getAllAnchors(oldState);
+    const newAnchors = getAllAnchors(newState);
+
+    if (newAnchors.length < oldAnchors.length) {
+      setAnchors(newAnchors);
+
+      for (let oldAnchor of oldAnchors) {
+        if (!newAnchors.includes(oldAnchor)) {
+          onRemoveAnchor(oldAnchor);
+        }
+      }
+    }
+  };
+
+  return { placeAnchor, anchors, checkForDeletedAnchors };
+};
+
+export const useAudioMarkers = (
+  audioEditRef: React.RefObject<IAudioEditRef>
+) => {
+  const [timestamps, setTimestamps] = React.useState<Timestamp[]>([]);
+
+  const handleAddAnchor = (anchorId: string) => {
+    if (audioEditRef.current === null) {
+      console.log("ref is null");
+      return;
+    }
+
+    console.log("adding anchor");
+
+    audioEditRef.current.addAnchor();
+  };
+
+  const handleRemoveAnchor = (anchorId: string) => {};
+
+  return { handleAddAnchor, handleRemoveAnchor, timestamps };
 };

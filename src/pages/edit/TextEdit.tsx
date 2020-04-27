@@ -15,6 +15,8 @@ import ErrorModal from "./ErrorModal";
 
 export interface TextEditProps {
   canSetAnchors: boolean;
+  onAddAnchor: (id: string) => void;
+  onRemoveAnchor: (id: string) => void;
 }
 
 export interface TextEditRef {
@@ -32,7 +34,7 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
   props,
   ref
 ) {
-  const { canSetAnchors } = props;
+  const { canSetAnchors, onAddAnchor, onRemoveAnchor } = props;
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(
       ContentState.createFromText("Start writing your next masterpiece..."),
@@ -41,10 +43,12 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
   );
   const [error, setError] = React.useState<string | null>(null);
 
-  const { placeAnchor, anchors } = useAnchorModifiers(
+  const { placeAnchor, anchors, checkForDeletedAnchors } = useAnchorModifiers(
     setEditorState,
     canSetAnchors,
-    setError
+    setError,
+    onAddAnchor,
+    onRemoveAnchor
   );
 
   React.useImperativeHandle<TextEditRef, TextEditRef>(ref, () => ({
@@ -59,12 +63,17 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
     return "not-handled";
   };
 
+  const handleEditorChange = (newState: EditorState) => {
+    checkForDeletedAnchors(editorState, newState);
+    setEditorState(newState);
+  };
+
   return (
     <AnchorContext.Provider value={anchors}>
       <div className="TextEdit">
         <Editor
           editorState={editorState}
-          onChange={setEditorState}
+          onChange={handleEditorChange}
           keyBindingFn={keyBindingFn}
           handleKeyCommand={handleKeyCommand}
         />
