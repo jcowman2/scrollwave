@@ -3,14 +3,14 @@ import {
   Editor,
   EditorState,
   ContentState,
-  ContentBlock,
   KeyBindingUtil,
   getDefaultKeyBinding,
   DraftHandleValue
 } from "draft-js";
 import { useAnchorModifiers } from "./edit.hooks";
-import AnchorBlock from "./AnchorBlock";
 import { Key, KeybindEvent } from "../../common/enum";
+import { decorator } from "./AnchorSpan";
+import { AnchorContext } from "./edit.context";
 
 export interface TextEditProps {}
 
@@ -25,28 +25,18 @@ const keyBindingFn = (e: any) => {
   return getDefaultKeyBinding(e);
 };
 
-const blockRendererFn = (block: ContentBlock) => {
-  if (block.getType() !== "atomic") {
-    return;
-  }
-
-  return {
-    component: AnchorBlock,
-    editable: false
-  };
-};
-
 const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
   props,
   ref
 ) {
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(
-      ContentState.createFromText("Start writing your next masterpiece...")
+      ContentState.createFromText("Start writing your next masterpiece..."),
+      decorator
     )
   );
 
-  const { placeAnchor } = useAnchorModifiers(setEditorState);
+  const { placeAnchor, anchors } = useAnchorModifiers(setEditorState);
 
   React.useImperativeHandle<TextEditRef, TextEditRef>(ref, () => ({
     getContentState: () => editorState.getCurrentContent()
@@ -61,17 +51,16 @@ const TextEdit = React.forwardRef<TextEditRef, TextEditProps>(function TextEdit(
   };
 
   return (
-    <>
+    <AnchorContext.Provider value={anchors}>
       <div className="TextEdit">
         <Editor
           editorState={editorState}
           onChange={setEditorState}
-          blockRendererFn={blockRendererFn}
           keyBindingFn={keyBindingFn}
           handleKeyCommand={handleKeyCommand}
         />
       </div>
-    </>
+    </AnchorContext.Provider>
   );
 });
 

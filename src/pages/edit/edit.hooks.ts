@@ -1,28 +1,58 @@
-import { EditorState, AtomicBlockUtils } from "draft-js";
+import React from "react";
+import {
+  EditorState,
+  AtomicBlockUtils,
+  Modifier,
+  SelectionState
+} from "draft-js";
 import { EntityType } from "../../common/enum";
+import { newId } from "../../common/utils";
 
 export const useAnchorModifiers = (
   setEditorState: (es: EditorState) => void
 ) => {
+  const [anchors, setAnchors] = React.useState<string[]>([]);
+
+  const addAnchor = (newAnchor: string) => {
+    setAnchors([...anchors, newAnchor]);
+  };
+
   const placeAnchor = (editorState: EditorState) => {
+    const anchorId = newId();
+
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
       EntityType.ANCHOR,
-      "IMMUTABLE"
+      "IMMUTABLE",
+      { id: anchorId }
     );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+    const initSelectionState = editorState.getSelection();
+    if (
+      initSelectionState.getStartOffset() !== initSelectionState.getEndOffset()
+    ) {
+      console.log("cannot have things highlighted");
+      return;
+    }
+
+    const contentStateWithAnchor = Modifier.insertText(
+      contentStateWithEntity,
+      initSelectionState,
+      "■",
+      undefined,
+      entityKey
+    );
+
     const newEditorState = EditorState.push(
       editorState,
-      contentStateWithEntity,
-      "insert-fragment"
+      contentStateWithAnchor,
+      "insert-characters"
     );
 
-    console.log("setting editor state");
-
-    setEditorState(
-      AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, " ")
-    );
+    setEditorState(newEditorState);
+    addAnchor(anchorId);
   };
 
-  return { placeAnchor };
+  return { placeAnchor, anchors };
 };

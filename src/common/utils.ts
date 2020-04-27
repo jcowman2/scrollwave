@@ -64,3 +64,8 @@ export const splitParagraph = (blockId: string, text: string) => {
     text: span
   }));
 };
+
+export const newId = () => {
+  const str = Math.random().toString(36);
+  return `_${str.substr(2, 8)}`;
+};
