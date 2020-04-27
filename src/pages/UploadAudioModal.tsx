@@ -54,6 +54,12 @@ const UploadAudioModal: React.FC<IUploadAudioModalProps> = props => {
           </div>
         )}
       </div>
+      <div style={{ marginTop: 12, opacity: 0.7 }}>
+        <i>
+          This file will only be stored in your browser&apos;s memory while you
+          use Scrollwave. It will not be sent anywhere.
+        </i>
+      </div>
     </CardModal>
   );
 };

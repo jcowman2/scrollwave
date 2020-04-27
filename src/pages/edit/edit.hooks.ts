@@ -23,7 +23,7 @@ export const useAnchorModifiers = (
   const placeAnchor = (editorState: EditorState) => {
     if (!canSetAnchors) {
       setError(
-        "Can't place an anchor yet. Did you upload audio and switch out of manual mode?"
+        "Can't place an anchor yet. Did you upload audio and switch out of automatic mode?"
       );
       return;
     }
