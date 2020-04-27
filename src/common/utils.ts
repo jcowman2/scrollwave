@@ -1,5 +1,8 @@
 import { ReaderEventType } from "./enum";
 import { ENTER_FADE_DURATION, LEAVE_FADE_DURATION } from "./constants";
+import { Timestamp } from "../pages/edit/edit.types";
+import { ISpan } from "./common.types";
+import { ContentBlock } from "draft-js";
 
 const KILOBYTE = 1000;
 const MEGABYTE = KILOBYTE * 1000;
@@ -41,7 +44,7 @@ export const getTransitionLength = (event: ReaderEventType) => {
 export const getWordCount = (text: string) => text.split(" ").length;
 
 const PUNC = [".", "?", "!", ","];
-export const splitParagraph = (blockId: string, text: string) => {
+export const splitParagraph = (blockId: string, text: string): ISpan[] => {
   let spans = [text];
   for (let punc of PUNC) {
     const tempSpans: string[] = [];
@@ -64,6 +67,14 @@ export const splitParagraph = (blockId: string, text: string) => {
     text: span
   }));
 };
+
+// export const anchorSplit = (
+//   block: ContentBlock,
+//   timestamps: Timestamp[]
+// ): ISpan[] => {
+
+//   return [];
+// };
 
 export const newId = () => {
   const str = Math.random().toString(36);

@@ -3,6 +3,7 @@ import { EditorState, Modifier, convertToRaw } from "draft-js";
 import { EntityType } from "../../common/enum";
 import { Timestamp } from "./edit.types";
 import { IAudioEditRef } from "./AudioEdit";
+import { ANCHOR_SEP } from "../../common/constants";
 
 export const useAnchorModifiers = (
   setEditorState: (es: EditorState) => void,
@@ -49,7 +50,7 @@ export const useAnchorModifiers = (
     const contentStateWithAnchor = Modifier.insertText(
       contentStateWithEntity,
       initSelectionState,
-      "■",
+      ANCHOR_SEP,
       undefined,
       entityKey
     );

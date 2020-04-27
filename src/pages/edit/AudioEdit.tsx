@@ -6,7 +6,7 @@ import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions";
 import { Color } from "../../common/enum";
 import Loadable from "../../common/Loadable";
 import AudioControls from "../../common/AudioControls";
-import { Timestamp, Region } from "./edit.types";
+import { Region } from "./edit.types";
 import RegionElementAnnotation from "./RegionElementAnnotation";
 
 export interface IAudioEditProps {

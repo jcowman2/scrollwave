@@ -1,9 +1,10 @@
-import Draft from "draft-js";
+import Draft, { ContentBlock, convertToRaw } from "draft-js";
 import { ReaderEventType } from "./enum";
 import { getTransitionLength, getWordCount, splitParagraph } from "./utils";
 import logger, { ReaderDataLogConfig as LC, LogConfig } from "./logger";
 import { IRegionState, ITrackRegion } from "../intime/intime.types";
 import { Timestamp } from "../pages/edit/edit.types";
+import { ANCHOR_SEP } from "./constants";
 
 const LOG = logger<LC>(LogConfig.ReaderData);
 
@@ -363,13 +364,45 @@ export class ReaderData {
     const draftBlocks = contentState.getBlocksAsArray();
     LOG.log(LC.FromEditor, { draftBlocks });
 
-    const readerBlocks = draftBlocks.map(draftBlock => ({
-      id: draftBlock.getKey(),
-      spans: splitParagraph(draftBlock.getKey(), draftBlock.getText())
-    }));
+    let readerBlocks: IBlock[] = [];
+
+    if (!automaticMode) {
+      const { entityMap, blocks } = convertToRaw(contentState);
+
+      blocks.forEach(block => {
+        const entityKeys = block.entityRanges.map(e => e.key);
+        const entities = entityKeys.map(key => entityMap[key]);
+        const positions = entities.map(entity =>
+          timestamps.find(timestamp => timestamp.anchorId === entity.data.id)
+        );
+
+        const spanTexts = block.text.split(ANCHOR_SEP);
+        console.log(positions, spanTexts);
+        const spans: ISpan[] = [];
+        if (spanTexts.length > 0) {
+          spans.push({ id: block.key + "_0", text: spanTexts[0] });
+          positions.forEach((position, index) => {
+            spans.push({
+              id: `${block.key}_${index + 1}`,
+              text: spanTexts[index + 1],
+              start: position!.position * 1000
+            });
+          });
+        }
+
+        readerBlocks.push({
+          id: block.key,
+          spans
+        });
+      });
+    } else {
+      readerBlocks = draftBlocks.map(draftBlock => ({
+        id: draftBlock.getKey(),
+        spans: splitParagraph(draftBlock.getKey(), draftBlock.getText())
+      }));
+    }
 
     const audioElement = await ReaderData.loadAudioElement(audio);
-    console.log(audioElement);
     return new ReaderData(readerBlocks, audioElement);
   };
 }
