@@ -11,7 +11,7 @@
     "bulma": "^0.7.5",
     "bulmaswatch": "^0.7.5",
     "d3-ease": "^1.0.6",
-    "d3-interpolate": "^1.4.0",
+    "d3-interpolate": "^3.0.1",
     "draft-js": "^0.11.4",
     "gh-pages": "^2.2.0",
     "moment": "^2.24.0",
